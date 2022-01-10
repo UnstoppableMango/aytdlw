@@ -11,4 +11,8 @@
     <Protobuf Include="../../protos/*.proto" GrpcServices="Client" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta2.21617.1" />
+    <PackageReference Include="System.Text.Json" Version="6.0.1" />
+  </ItemGroup>
 </Project>
