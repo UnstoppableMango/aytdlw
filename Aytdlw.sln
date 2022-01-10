@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2BD543A3-9EB3-4F88-8129-ADBA368BD010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aytdlw", "src\aytdlw\aytdlw.csproj", "{2273E775-FC82-436F-8E58-DEC0F5853097}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aytdlw.Service", "src\Aytdlw.Service\Aytdlw.Service.csproj", "{42F7D344-2C16-4422-BA2D-E89B0D5AF155}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2273E775-FC82-436F-8E58-DEC0F5853097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2273E775-FC82-436F-8E58-DEC0F5853097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2273E775-FC82-436F-8E58-DEC0F5853097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2273E775-FC82-436F-8E58-DEC0F5853097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42F7D344-2C16-4422-BA2D-E89B0D5AF155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42F7D344-2C16-4422-BA2D-E89B0D5AF155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42F7D344-2C16-4422-BA2D-E89B0D5AF155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42F7D344-2C16-4422-BA2D-E89B0D5AF155}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2273E775-FC82-436F-8E58-DEC0F5853097} = {2BD543A3-9EB3-4F88-8129-ADBA368BD010}
+		{42F7D344-2C16-4422-BA2D-E89B0D5AF155} = {2BD543A3-9EB3-4F88-8129-ADBA368BD010}
+	EndGlobalSection
+EndGlobal
