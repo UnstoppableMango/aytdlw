@@ -5,24 +5,53 @@ namespace aytdlw;
 
 public interface IConfig
 {
-    string Get(string key);
+    string? Get(string key);
+
+    void Remove(string key);
+    
     void Set(string key, string value);
 }
 
 public class Config : IConfig
 {
-    private readonly IConsole? _console;
+    private readonly IConsole _console;
     private readonly string _configFile;
     
-    public Config(string configDir, IConsole? console)
+    public Config(string configDir, IConsole console)
     {
         _console = console;
         _configFile = Path.Combine(configDir, "config.json");
     }
     
-    public string Get(string key)
+    public string? Get(string key)
     {
-        return "TODO";
+        EnsureInitialized();
+        
+        var contents = File.OpenRead(_configFile);
+        var config = JsonSerializer.Deserialize<Dictionary<string, string>>(contents);
+
+        if (config == null) {
+            throw new("Unable to deserialize config");
+        }
+
+        return config.TryGetValue(key, out var result) ? result : null;
+    }
+
+    public void Remove(string key)
+    {
+        EnsureInitialized();
+        
+        var contents = File.OpenRead(_configFile);
+        var config = JsonSerializer.Deserialize<Dictionary<string, string>>(contents);
+
+        if (config == null) {
+            throw new("Unable to deserialize config");
+        }
+
+        config.Remove(key);
+
+        var json = JsonSerializer.Serialize(config);
+        File.WriteAllText(_configFile, json);
     }
     
     public void Set(string key, string value)
@@ -30,17 +59,26 @@ public class Config : IConfig
         EnsureInitialized();
         
         var contents = File.OpenRead(_configFile);
-        var config = JsonSerializer.Deserialize<AytdlwConfig>(contents);
+        var config = JsonSerializer.Deserialize<Dictionary<string, string>>(contents);
 
         if (config == null) {
-            _console.WriteLine("Unable to deserialize config");
+            throw new("Unable to deserialize config");
         }
+
+        config[key] = value;
+
+        var json = JsonSerializer.Serialize(config);
+        File.WriteAllText(_configFile, json);
     }
 
     private void EnsureInitialized()
     {
-        if (!File.Exists(_configFile)) {
-            File.WriteAllText(_configFile, "{}");
+        if (File.Exists(_configFile)) {
+            return;
         }
+
+        _console.WriteLine($"Initializing config at {_configFile}");
+        var json = JsonSerializer.Serialize(new Dictionary<string, string>());
+        File.WriteAllText(_configFile, $"{json}\n");
     }
 }

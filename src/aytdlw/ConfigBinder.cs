@@ -14,7 +14,6 @@ public class ConfigBinder : BinderBase<Config>
     
     protected override Config GetBoundValue(BindingContext bindingContext)
     {
-        var console = bindingContext.GetService(typeof(IConsole));
-        return new(_configDir, console as IConsole);
+        return new(_configDir, bindingContext.Console);
     }
 }
