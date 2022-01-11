@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Aytdlw.Service";
+
+package queue;
+
+service DownloadQueue {
+  rpc Enqueue(EnqueueRequest) returns (EnqueueReply);
+  rpc Status(google.protobuf.Empty) returns (StatusReply);
+}
+
+message EnqueueRequest {
+  string url = 1;
+}
+
+message EnqueueReply {
+  int32 id = 1;
+  string message = 2;
+}
+
+message StatusReply {
+  int32 size = 1;
+  string active = 2;
+}

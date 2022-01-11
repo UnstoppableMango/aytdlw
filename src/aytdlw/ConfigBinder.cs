@@ -1,7 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.Binding;
 
-namespace aytdlw;
+namespace Aytdlw;
 
 public class ConfigBinder : BinderBase<Config>
 {

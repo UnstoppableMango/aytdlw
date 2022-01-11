@@ -1,7 +1,7 @@
 using System.CommandLine;
 using System.Text.Json;
 
-namespace aytdlw;
+namespace Aytdlw;
 
 public interface IConfig
 {

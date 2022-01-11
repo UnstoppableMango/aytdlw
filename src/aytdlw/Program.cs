@@ -2,7 +2,10 @@
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 
-using aytdlw;
+using Aytdlw;
+using Aytdlw.Service;
+
+using Microsoft.Extensions.DependencyInjection;
 
 var configBase = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME");
 if (string.IsNullOrWhiteSpace(configBase)) {
@@ -23,15 +26,26 @@ if (!Directory.Exists(configDir)) {
     Directory.CreateDirectory(configDir);
 }
 
-var configBinder = new ConfigBinder(configDir);
+var serviceCollection = new ServiceCollection()
+    .AddTransient<IConfig>(sp => new Config(configDir, sp.GetRequiredService<IConsole>()));
+
+serviceCollection.AddGrpcClient<DownloadQueue.DownloadQueueClient>(options => {
+    options.Address = new Uri("http://localhost:5190");
+});
+
+var services = serviceCollection.BuildServiceProvider();
+
+var configBinder = new ServiceProviderBinder<IConfig>(services);
+var clientBinder = new ServiceProviderBinder<DownloadQueue.DownloadQueueClient>(services);
 
 var configGetKeyArgument = new Argument<string>("key", "The key of the configuration value to get");
 var configGetCommand = new Command("get", "Get a configuration value") {
     configGetKeyArgument
 };
-configGetCommand.SetHandler((string key, IConfig config, IConsole console) => {
-    console.WriteLine(config.Get(key) ?? string.Empty);
-},
+configGetCommand.SetHandler(
+    (string key, IConfig config, IConsole console) => {
+        console.WriteLine(config.Get(key) ?? string.Empty);
+    },
     configGetKeyArgument,
     configBinder);
 
@@ -40,9 +54,10 @@ var configRemoveCommand = new Command("remove", "Remove a configuration value") 
     configRemoveKeyArgument
 };
 configRemoveCommand.AddAlias("rm");
-configRemoveCommand.SetHandler((string key, IConfig config) => {
-    config.Remove(key);
-},
+configRemoveCommand.SetHandler(
+    (string key, IConfig config) => {
+        config.Remove(key);
+    },
     configRemoveKeyArgument,
     configBinder);
 
@@ -52,9 +67,10 @@ var configSetCommand = new Command("set", "Set a configuration value") {
     configSetKeyArgument,
     configSetValueArgument
 };
-configSetCommand.SetHandler((string key, string value, IConfig config) => {
-    config.Set(key, value);
-},
+configSetCommand.SetHandler(
+    (string key, string value, IConfig config) => {
+        config.Set(key, value);
+    },
     configSetKeyArgument,
     configSetValueArgument,
     configBinder);
@@ -65,7 +81,22 @@ var configCommand = new Command("config", "Get and set configuration") {
     configSetCommand
 };
 
-var queueCommand = new Command("queue", "Queue a download");
+var queueUrlArgument = new Argument<string>("url", "The url for the download to queue");
+var queueCommand = new Command("queue", "Queue a download") {
+    queueUrlArgument,
+};
+queueCommand.AddAlias("q");
+queueCommand.SetHandler(
+    (string url, DownloadQueue.DownloadQueueClient client, IConsole console, CancellationToken cancellationToken) => {
+        var reply = client.Enqueue(new() {
+            Url = url
+        }, cancellationToken: cancellationToken);
+        
+        console.WriteLine($"{reply.Id}");
+        console.WriteLine(reply.Message);
+    },
+    queueUrlArgument,
+    clientBinder);
 
 var startCommand = new Command("start", "Start the background service");
 startCommand.SetHandler((IConsole console, IConfig config) => {
