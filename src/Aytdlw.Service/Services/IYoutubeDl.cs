@@ -4,5 +4,5 @@ namespace Aytdlw.Service.Services;
 
 public interface IYoutubeDl
 {
-    ValueTask<DownloadJob> Download(string url, CancellationToken cancellationToken = default);
+    ValueTask<DownloadJob> DownloadAsync(string url, CancellationToken cancellationToken = default);
 }

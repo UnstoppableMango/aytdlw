@@ -5,8 +5,8 @@ namespace Aytdlw.Service.Services;
 public class YtdlpProcess : IYoutubeDl
 {
 
-    public ValueTask<DownloadJob> Download(string url, CancellationToken cancellationToken = default)
+    public ValueTask<DownloadJob> DownloadAsync(string url, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return new ValueTask<DownloadJob>(new DownloadJob());
     }
 }
