@@ -1,3 +1,4 @@
+using Aytdlw.Service.Models;
 using Aytdlw.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddSingleton<ITaskQueue, BackgroundTaskQueue>();
 builder.Services.AddTransient<IYoutubeDl, YtdlpProcess>();
 builder.Services.AddTransient<IJobReporter, ConsoleJobReporter>();
 builder.Services.AddHostedService<QueueProcessor>();
+builder.Services.Configure<AytdlwOptions>(builder.Configuration);
 
 var app = builder.Build();
 
