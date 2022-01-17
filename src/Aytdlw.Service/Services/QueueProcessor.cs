@@ -4,9 +4,9 @@ public class QueueProcessor : BackgroundService
 {
     private readonly ITaskQueue _queue;
     private readonly IServiceProvider _services;
-    private readonly ILogger _logger;
+    private readonly ILogger<QueueProcessor> _logger;
 
-    public QueueProcessor(ITaskQueue queue, IServiceProvider services, ILogger logger)
+    public QueueProcessor(ITaskQueue queue, IServiceProvider services, ILogger<QueueProcessor> logger)
     {
         _queue = queue;
         _services = services;
@@ -21,8 +21,14 @@ public class QueueProcessor : BackgroundService
             await using var scope = _services.CreateAsyncScope();
             _logger.LogDebug("Dequeuing work item");
             var work = await _queue.DequeueAsync(stoppingToken);
-            _logger.LogInformation("Processing new work item");
-            await work(scope.ServiceProvider, stoppingToken);
+
+            try {
+                _logger.LogInformation("Processing new work item");
+                await work(scope.ServiceProvider, stoppingToken);
+            }
+            catch (Exception exception) {
+                _logger.LogError(exception, "Exception processing work");
+            }
         }
     }
 }
