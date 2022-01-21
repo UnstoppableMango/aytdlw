@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Builder;
+using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 
 using Aytdlw;
@@ -27,7 +28,8 @@ if (!Directory.Exists(configDir)) {
 }
 
 var serviceCollection = new ServiceCollection()
-    .AddTransient<IConfig>(sp => new Config(configDir, sp.GetRequiredService<IConsole>()));
+    .AddTransient<IConfig>(sp => new Config(configDir, sp.GetRequiredService<IConsole>()))
+    .AddTransient<IConsole, SystemConsole>();
 
 serviceCollection.AddGrpcClient<DownloadQueue.DownloadQueueClient>(options => {
     options.Address = new Uri("http://localhost:5190");

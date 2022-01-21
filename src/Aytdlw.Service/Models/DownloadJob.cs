@@ -17,8 +17,8 @@ public record DownloadJob
         
         _errorReceived = new(
             () => Observable.FromEvent<DataReceivedEventHandler, DataReceivedEventArgs>(
-                handler => process.OutputDataReceived += handler,
-                handler => process.OutputDataReceived -= handler));
+                handler => process.ErrorDataReceived += handler,
+                handler => process.ErrorDataReceived -= handler));
     }
 
     public IObservable<DataReceivedEventArgs> OutputReceived => _outputReceived.Value;
