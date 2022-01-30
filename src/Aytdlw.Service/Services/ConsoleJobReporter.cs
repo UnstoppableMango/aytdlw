@@ -7,6 +7,7 @@ public sealed class ConsoleJobReporter : IJobReporter, IDisposable
     private readonly ILogger<ConsoleJobReporter> _logger;
     private IDisposable? _outputSubscription;
     private IDisposable? _errorSubscription;
+    private IDisposable? _exitedSubscription;
 
     public ConsoleJobReporter(ILogger<ConsoleJobReporter> logger)
     {
@@ -20,11 +21,14 @@ public sealed class ConsoleJobReporter : IJobReporter, IDisposable
         
         _errorSubscription =
             job.ErrorReceived.Subscribe(args => _logger.LogInformation("{Data}", args.Data ?? "Error event w/o data"));
+
+        _exitedSubscription = job.Exited.Subscribe(_ => _logger.LogInformation("Process exited"));
     }
 
     public void Dispose()
     {
         _outputSubscription?.Dispose();
         _errorSubscription?.Dispose();
+        _exitedSubscription?.Dispose();
     }
 }

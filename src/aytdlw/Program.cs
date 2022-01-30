@@ -6,6 +6,8 @@ using System.CommandLine.Parsing;
 using Aytdlw;
 using Aytdlw.Service;
 
+using Grpc.Core;
+
 using Microsoft.Extensions.DependencyInjection;
 
 var configBase = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME");
@@ -90,12 +92,17 @@ var queueCommand = new Command("queue", "Queue a download") {
 queueCommand.AddAlias("q");
 queueCommand.SetHandler(
     (string url, DownloadQueue.DownloadQueueClient client, IConsole console, CancellationToken cancellationToken) => {
-        var reply = client.Enqueue(new() {
-            Url = url
-        }, cancellationToken: cancellationToken);
-        
-        console.WriteLine($"{reply.Id}");
-        console.WriteLine(reply.Message);
+        try {
+            var reply = client.Enqueue(new() {
+                Url = url,
+            }, cancellationToken: cancellationToken);
+
+            console.WriteLine($"{reply.Id}");
+            console.WriteLine(reply.Message);
+        }
+        catch (RpcException e) {
+            console.WriteLine("Failed to queue request");
+        }
     },
     queueUrlArgument,
     clientBinder);

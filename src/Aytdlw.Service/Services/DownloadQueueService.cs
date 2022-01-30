@@ -17,7 +17,7 @@ public class DownloadQueueService : DownloadQueue.DownloadQueueBase
         
         return new EnqueueReply {
             Id = id,
-            Message = "Job enqueued"
+            Message = "Job enqueued",
         };
     }
 }

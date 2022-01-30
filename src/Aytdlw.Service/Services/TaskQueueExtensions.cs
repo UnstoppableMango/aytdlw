@@ -22,5 +22,6 @@ public static class TaskQueueExtensions
         var reporter = services.GetRequiredService<IJobReporter>();
         var job = await ytdl.DownloadAsync(request.Url, cancellationToken);
         reporter.Watch(job);
+        await job.WaitUntilFinished(cancellationToken);
     }
 }

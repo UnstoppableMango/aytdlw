@@ -45,6 +45,9 @@ public class YtdlpProcess : IYoutubeDl
         if (!process.Start()) {
             return ValueTask.FromException<DownloadJob>(new("Unable to start process"));
         }
+        
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
 
         return new(new DownloadJob(process));
     }
